@@ -1,109 +1,84 @@
-import React, { useEffect } from 'react';
-import * as d3 from 'd3';
+import * as d3 from "d3";
+import React, { useEffect } from "react";
 
-const Viz = (props) => {
+const Viz = props => {
   useEffect(() => {
-   d3.select('.viz > *').remove();
-   draw(props)
- }, [props.shapes.length])
-  return <div className="viz" />
-}
+    d3.select(".viz > *").remove();
+    draw(props);
+  }, [props.shapes]);
+  return <div className="viz" />;
+};
 
-const draw = (props) => {
-    const w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    d3.select('.viz').append('svg')
-      .attr('height', h)
-      .attr('width', w)
-      .attr('id', 'svg-viz')
+const draw = props => {
+  // set the dimensions and margins of the graph
+  const margin = { top: 10, right: 30, bottom: 30, left: 60 };
+  const width = 460 - margin.left - margin.right;
+  const height = 400 - margin.top - margin.bottom;
 
-    const bubbles = props.shapes
-    const max = d3.max(bubbles)
-    const radiusScale = d3.scaleSqrt().domain([0, max]).range([0, max])
+  const svg = d3
+    .select(".viz")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    const simulation = d3.forceSimulation()
-      .force('x', d3.forceX(w/3).strength(0.05))
-      .force('y', d3.forceY(h/3).strength(0.05))
-      .force('charge', d3.forceManyBody().strength(-1300))
-      .force('collide', d3.forceCollide(d => radiusScale(d.number)+1))
+  //Read the data
+  d3.csv(
+    "https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
 
-  const circles = d3.select('#svg-viz').selectAll('circle')
-    .data(props.shapes)
-    .enter()
-    .append('svg:circle')
-    .attr('r', d => d.width/2+"px")
-    .style('fill', (d) => d.color ? d.color : 'purple')
+    // When reading the csv, I must format variables:
+    function(d) {
+      return { date: d3.timeParse("%Y-%m-%d")(d.date), value: d.value };
+    },
 
-  simulation.nodes(props.shapes)
-  .on('tick', ticked)
-  
-  function ticked() {
-      circles
-      .attr('cx', d => d.x)
-      .attr('cy', d => d.y)
+    // Now I can use this dataset:
+    function(data) {
+      // Add X axis --> it is a date format
+      var x = d3
+        .scaleTime()
+        .domain(
+          d3.extent(data, function(d) {
+            return d.date;
+          })
+        )
+        .range([0, width]);
+      svg
+        .append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+      // Add Y axis
+      var y = d3
+        .scaleLinear()
+        .domain([
+          0,
+          d3.max(data, function(d) {
+            return +d.value;
+          })
+        ])
+        .range([height, 0]);
+      svg.append("g").call(d3.axisLeft(y));
+
+      // Add the line
+      svg
+        .append("path")
+        .datum(data)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5)
+        .attr(
+          "d",
+          d3
+            .line()
+            .x(function(d) {
+              return x(d.date);
+            })
+            .y(function(d) {
+              return y(d.value);
+            })
+        );
     }
-  }
-export default Viz
-
-
-// export default class Viz extends Component {
-//   componentDidMount() {
-//   	this.draw(this.props)
-//   }
-//   componentDidUpdate(prevProps){
-//     //this makes sure we don't redraw unnecessarily --
-//     //only when we add a new shape
-//     if(this.props.shapes.length !== prevProps.shapes.length){
-//       d3.select('.viz > *').remove();
-//       this.draw(this.props)
-//     }
-//   }
-
-//   render() {
-//     return (
-//       <div className="viz" />
-//     )
-//   }
-  
- //  draw = (props) => {
- //    const w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
- //    const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
- //    d3.select('.viz').append('svg')
- //      .attr('height', h)
- //      .attr('width', w)
- //      .attr('id', 'svg-viz')
-
- //    const bubbles = props.shapes
- //    const max = d3.max(bubbles)
- //  	const radiusScale = d3.scaleSqrt().domain([0, max]).range([0, max])
-
- //  	const simulation = d3.forceSimulation()
- //  		.force('x', d3.forceX(w/3).strength(0.05))
- //  		.force('y', d3.forceY(h/3).strength(0.05))
- //  		.force('charge', d3.forceManyBody().strength(-1300))
- //  		.force('collide', d3.forceCollide(d => radiusScale(d.number)+1))
-
-	// const circles = d3.select('#svg-viz').selectAll('circle')
-	//   .data(props.shapes)
-	//   .enter()
-	//   .append('svg:circle')
-	//   .attr('r', d => d.width/2+"px")
-	//   .style('fill', (d) => d.color ? d.color : 'purple')
-
-	// simulation.nodes(props.shapes)
-	// .on('tick', ticked)
-	
-	// function ticked() {
- //  	  circles
- //  	  .attr('cx', d => d.x)
- //  	  .attr('cy', d => d.y)
- //  	}
- //  }
-
-// }
-
-
-
-
-
-
+  );
+};
+export default Viz;
