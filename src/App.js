@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Controller1 from "./App1/Controller.js";
-import Controller2 from "./App2/Controller.js";
+import Controller1 from "./App1/Controller";
+import Controller2 from "./App2/Controller";
 import "./index.css";
 
 const App = () => {

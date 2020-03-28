@@ -1,84 +1,47 @@
 import * as d3 from "d3";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-const Viz = props => {
+function Viz(props) {
+  const [rows, setRows] = useState([]);
+
   useEffect(() => {
-    d3.select(".viz > *").remove();
-    draw(props);
-  }, [props.shapes]);
-  return <div className="viz" />;
-};
+    d3.csv(
+      "https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
 
-const draw = props => {
-  // set the dimensions and margins of the graph
-  const margin = { top: 10, right: 30, bottom: 30, left: 60 };
-  const width = 460 - margin.left - margin.right;
-  const height = 400 - margin.top - margin.bottom;
+      // When reading the csv, I must format variables:
+      d => ({
+        date: d3.timeParse("%Y-%m-%d")(d.date),
+        value: d.value
+      })
+    ).then(data => {
+      setRows(data);
+    });
+  }, [rows]);
 
-  const svg = d3
-    .select(".viz")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  const drawLine = () => {
+    let xScale = d3
+      .scaleTime()
+      .domain(d3.extent(rows, ({ date }) => date))
+      .rangeRound([0, props.width]);
 
-  //Read the data
-  d3.csv(
-    "https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
+    let yScale = d3
+      .scaleLinear()
+      .domain(d3.extent(rows, ({ value }) => value))
+      .rangeRound([props.height, 0]);
 
-    // When reading the csv, I must format variables:
-    function(d) {
-      return { date: d3.timeParse("%Y-%m-%d")(d.date), value: d.value };
-    },
+    let line = d3
+      .line()
+      .x(d => xScale(d.date))
+      .y(d => yScale(d.value));
 
-    // Now I can use this dataset:
-    function(data) {
-      // Add X axis --> it is a date format
-      var x = d3
-        .scaleTime()
-        .domain(
-          d3.extent(data, function(d) {
-            return d.date;
-          })
-        )
-        .range([0, width]);
-      svg
-        .append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
+    return <path className="line" d={line(rows)} />;
+  };
 
-      // Add Y axis
-      var y = d3
-        .scaleLinear()
-        .domain([
-          0,
-          d3.max(data, function(d) {
-            return +d.value;
-          })
-        ])
-        .range([height, 0]);
-      svg.append("g").call(d3.axisLeft(y));
-
-      // Add the line
-      svg
-        .append("path")
-        .datum(data)
-        .attr("fill", "none")
-        .attr("stroke", "steelblue")
-        .attr("stroke-width", 1.5)
-        .attr(
-          "d",
-          d3
-            .line()
-            .x(function(d) {
-              return x(d.date);
-            })
-            .y(function(d) {
-              return y(d.value);
-            })
-        );
-    }
+  return (
+    <svg className="line-container" width={props.width} height={props.height}>
+      {drawLine()}
+    </svg>
   );
-};
+}
+
 export default Viz;
