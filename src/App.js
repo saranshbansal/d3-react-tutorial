@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Controller1 from "./App1/Controller";
 import Controller2 from "./App2/Controller";
 import BarChartContainer from "./App3/BarChartContainer";
-import BarChartContainer2 from "./App4/BarChartContainer";
+import LineChartContainer from "./App4/LineChartContainer";
 import "./index.css";
 
 const App = () => {
@@ -42,7 +42,7 @@ const App = () => {
             return <BarChartContainer />;
           case 4:
             // code block
-            return <BarChartContainer2 />;
+            return <LineChartContainer />;
           default:
             // code block
             return <Controller1 />;
