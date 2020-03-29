@@ -38,7 +38,7 @@ function Viz(props) {
   };
 
   return (
-    <svg className="line-container" width={props.width} height={props.height}>
+    <svg className="chart-container" width={props.width} height={props.height}>
       {drawLine()}
     </svg>
   );
