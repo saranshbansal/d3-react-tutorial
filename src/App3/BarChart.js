@@ -18,6 +18,11 @@ const BarChart = ({ data }) => {
     if (data && d3svg.current) {
       let svg = select(d3svg.current);
 
+      // adjust margins of the chart within the chart area
+      svg = svg
+        .append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
       // scales
       const xMax = max(data, d => d.revenue);
 
@@ -29,11 +34,6 @@ const BarChart = ({ data }) => {
         .domain(data.map(d => d.genre))
         .rangeRound([0, height])
         .paddingInner(0.25);
-
-      // append group translated to chart area
-      svg = svg
-        .append("g")
-        .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
       // draw header
       svg

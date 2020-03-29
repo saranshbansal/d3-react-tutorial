@@ -8,7 +8,7 @@ function Viz(props) {
     d3.csv(
       "https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
 
-      // When reading the csv, I must format variables:
+      // When reading the csv, chart-container must be format variables:
       d => ({
         date: d3.timeParse("%Y-%m-%d")(d.date),
         value: d.value
@@ -38,7 +38,7 @@ function Viz(props) {
   };
 
   return (
-    <svg className="chart-container" width={props.width} height={props.height}>
+    <svg width={props.width} height={props.height}>
       {drawLine()}
     </svg>
   );

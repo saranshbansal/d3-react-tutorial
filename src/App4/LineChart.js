@@ -7,7 +7,7 @@ import { timeFormat } from "d3-time-format";
 import React, { useEffect, useRef } from "react";
 
 // margin convention often used with D3
-const margin = {top: 50, right: 50, bottom: 50, left: 50};
+const margin = { top: 50, right: 50, bottom: 50, left: 50 };
 const width = 600 - margin.left - margin.right;
 const height = 400 - margin.top - margin.bottom;
 
@@ -18,16 +18,29 @@ const LineChart = ({ data }) => {
     if (data && d3svg.current) {
       let svg = select(d3svg.current);
 
+      // adjust margins of the chart within the chart area
+      svg = svg
+        .append("g")
+        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+      // set header
+      svg
+        .append("g")
+        .attr("class", "header")
+        .attr("transform", `translate(0, ${-margin.top / 2})`)
+        .append("text")
+        .append("tspan")
+        .text("Line chart");
+
       // set the ranges
-      var x = scaleTime().range([0, width]);
+      let x = scaleTime().range([0, width]);
       x.domain(
         extent(data, function(d) {
           return d.date;
         })
       );
 
-      var y = scaleLinear().range([height, 0]);
-
+      let y = scaleLinear().range([height, 0]);
       y.domain([
         min(data, function(d) {
           return d.value;
@@ -35,7 +48,7 @@ const LineChart = ({ data }) => {
         100
       ]);
 
-      var valueLine = line()
+      const valueLine = line()
         .x(function(d) {
           return x(d.date);
         })
@@ -54,6 +67,7 @@ const LineChart = ({ data }) => {
         .tickFormat(timeFormat("Week %V"))
         .tickValues(data.map(d => d.date));
 
+      //  Add the X Axis
       svg
         .append("g")
         .attr("class", "x axis")
@@ -61,7 +75,7 @@ const LineChart = ({ data }) => {
         .call(xAxis_woy);
 
       //  Add the Y Axis
-       svg.append("g").call(axisLeft(y));
+      svg.append("g").call(axisLeft(y));
 
       svg
         .selectAll(".dot")
@@ -89,7 +103,8 @@ const LineChart = ({ data }) => {
         .attr("y", function(d) {
           return y(d.value);
         })
-        .attr("dy", "-5")
+        .attr("dx", "-7")
+        .attr("dy", "-7")
         .text(function(d) {
           return d.value;
         });

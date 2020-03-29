@@ -8,8 +8,8 @@ const height = 400 - margin.top - margin.bottom;
 
 function Controller() {
   return (
-    <div>
-      <h3>Line Chart</h3>
+    <div className="chart-container">
+      <h4>d3 Line Chart with `svg` created via ReactJs</h4>
       <Viz width={width} height={height} />
     </div>
   );

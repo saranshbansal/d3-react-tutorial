@@ -61,6 +61,11 @@ select {
   color: white;
 }
 
+.info:active {
+  background: #2196f3;
+  color: white;
+}
+
 /* Orange */
 .warning {
   border-color: #ff9800;
