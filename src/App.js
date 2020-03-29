@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Controller1 from "./App1/Controller";
 import Controller2 from "./App2/Controller";
 import BarChartContainer from "./App3/BarChartContainer";
+import BarChartContainer2 from "./App4/BarChartContainer";
 import "./index.css";
 
 const App = () => {
@@ -24,6 +25,9 @@ const App = () => {
         <button className="btn info" onClick={() => setTab(3)}>
           APP 3
         </button>
+        <button className="btn info" onClick={() => setTab(4)}>
+          APP 4
+        </button>
       </section>
       {(() => {
         switch (tab) {
@@ -36,13 +40,14 @@ const App = () => {
           case 3:
             // code block
             return <BarChartContainer />;
+          case 4:
+            // code block
+            return <BarChartContainer2 />;
           default:
             // code block
             return <Controller1 />;
         }
       })()}
-
-      {/* {tab === 1 ? <Controller1 /> : <Controller2 />} */}
     </div>
   );
 };
