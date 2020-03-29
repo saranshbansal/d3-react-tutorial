@@ -5,9 +5,9 @@ import { select } from "d3-selection";
 import React, { useEffect, useRef } from "react";
 
 // margin convention often used with D3
-const margin = { top: 80, right: 60, bottom: 80, left: 60 };
+const margin = { top: 50, right: 50, bottom: 50, left: 50 };
 const width = 600 - margin.left - margin.right;
-const height = 600 - margin.top - margin.bottom;
+const height = 400 - margin.top - margin.bottom;
 
 const color = ["#f05440", "#d5433d", "#b33535", "#283250"];
 
@@ -63,14 +63,13 @@ const BarChart = ({ data }) => {
       svg
         .append("g")
         .attr("class", "x axis")
-        .attr("transform", `translate(0,${height + margin.bottom / 3})`)
+        .attr("transform", `translate(0,${height})`)
         .call(xAxis);
 
       const yAxis = axisLeft(yScale).tickSize(0);
       svg
         .append("g")
         .attr("class", "y axis")
-        .attr("transform", `translate(${-margin.left / 3},0)`)
         .call(yAxis);
     }
   }, [data]);
