@@ -94,11 +94,14 @@ select {
 }
 
 /* d3 */
-
+.chart-container {
+  margin-left: 10px;
+  max-width: 100%;
+}
 .line {
   fill: none;
-  stroke: #ffab00;
-  stroke-width: 3;
+  stroke: blueviolet;
+  stroke-width: 1;
 }
 
 .axis path,

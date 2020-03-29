@@ -47,7 +47,7 @@ function dummyData() {
 }
 
 const LineChartContainer = () => {
-  const [LineChartData, setLineChartData] = useState(null);
+  const [lineChartData, setLineChartData] = useState(null);
 
   useEffect(() => {
     csv(
@@ -63,7 +63,7 @@ const LineChartContainer = () => {
     });
   }, []);
 
-  if (LineChartData === null) {
+  if (lineChartData === null) {
     return <p>Loading...</p>;
   }
 

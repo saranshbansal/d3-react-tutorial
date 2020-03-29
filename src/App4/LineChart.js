@@ -75,7 +75,7 @@ const LineChart = ({ data }) => {
         .attr("cy", function(d) {
           return y(d.value);
         })
-        .attr("r", 5);
+        .attr("r", 3);
 
       svg
         .selectAll(".text")
@@ -98,7 +98,7 @@ const LineChart = ({ data }) => {
 
   return (
     <svg
-      className="bar-chart-container"
+      className="chart-container"
       width={width + margin.left + margin.right}
       height={height + margin.top + margin.bottom}
       role="img"
